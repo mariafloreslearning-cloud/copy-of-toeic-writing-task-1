@@ -7,25 +7,31 @@
 
   <style>
     :root{
+      /* Rise-like palette */
       --bg:#f6f7f9;
       --surface:#ffffff;
       --text:#111827;
       --muted:#6b7280;
       --border:#e5e7eb;
 
+      /* Primary */
       --primary:#2563eb;
       --primaryHover:#1e4fd6;
 
+      /* Prompt */
       --accent:#e7f0ff;
       --accentBorder:#bcd6ff;
 
+      /* Neutrals */
       --soft:#f1f5f9;
       --softHover:#e5e7eb;
 
+      /* Status colors */
       --successBg:#dcfce7;
       --successText:#166534;
       --successBorder:#86efac;
 
+      /* Secondary (Return) */
       --secondaryBg:#f1f5f9;
       --secondaryText:#1e3a8a;
       --secondaryBorder:#c7d2fe;
@@ -76,6 +82,7 @@
 
     .section{ padding: 18px; }
 
+    /* Prompt block (same as speaking tasks) */
     .prompt{
       border:1px solid var(--accentBorder);
       background: linear-gradient(0deg, rgba(231,240,255,.55), rgba(231,240,255,.55)), #fff;
@@ -111,6 +118,7 @@
       align-items:center;
     }
 
+    /* State chip */
     .state{
       display:inline-flex;
       align-items:center;
@@ -164,6 +172,7 @@
     }
     .wordsLine em{ font-style: italic; }
 
+    /* Panel */
     .panel{
       margin-top: 14px;
       border:1px solid var(--border);
@@ -175,7 +184,7 @@
     .metaRow{
       display:flex;
       align-items:center;
-      justify-content:space-between;
+      justify-content:space-between; /* ✅ timer left, status right */
       gap:10px;
       flex-wrap:wrap;
       margin-bottom: 12px;
@@ -185,6 +194,7 @@
       font-size: 13px;
     }
 
+    /* Timer chip */
     .timerChip{
       display:inline-flex;
       align-items:center;
@@ -203,6 +213,7 @@
       letter-spacing: .02em;
     }
 
+    /* Buttons */
     .controls{
       display:flex;
       gap:10px;
@@ -226,22 +237,19 @@
     .btnPrimary{ background: var(--primary); color:#fff; }
     .btnPrimary:hover{ background: var(--primaryHover); }
 
+    .btnNeutral{
+      background: var(--soft);
+      color: #1f2937;
+      border:1px solid #d1d5db;
+    }
+    .btnNeutral:hover{ background: var(--softHover); }
+
     .btnSuccess{
       background: var(--successBg);
       color: var(--successText);
       border:1px solid var(--successBorder);
     }
     .btnSuccess:hover{ background: #bbf7d0; }
-
-    .btnDanger{ background:#ef4444; color:#fff; }
-    .btnDanger:hover{ background:#dc2626; }
-
-    .btnGhost{
-      background:#f9fafb;
-      color: var(--text);
-      border:1px solid var(--border);
-    }
-    .btnGhost:hover{ background:#f3f4f6; }
 
     .btnDownload{
       background:#f8fafc;
@@ -258,6 +266,7 @@
     }
     .btnReturn:hover{ background:#e0e7ff; }
 
+    /* Textarea */
     textarea{
       width:100%;
       min-height: 150px;
@@ -282,6 +291,7 @@
       color:#6b7280;
     }
 
+    /* Bottom buttons stable */
     .controlsBottom{
       margin-top:10px;
       display:flex;
@@ -289,8 +299,18 @@
       flex-wrap:wrap;
       align-items:center;
     }
-    .controlsBottom button{ flex: 0 0 auto; }
+    .controlsBottom button{
+      flex: 0 0 auto;
+    }
 
+    /* ✅ NEW: Return button pinned bottom-right of the PANEL (like your Speaking final layout) */
+    .panelFooter{
+      margin-top: 10px;
+      display:flex;
+      justify-content:flex-end;
+    }
+
+    /* Saved drafts */
     .saved{
       border-top:1px solid var(--border);
       padding: 16px 18px 18px;
@@ -382,6 +402,7 @@
       color:#111827;
     }
 
+    /* Modal overlay */
     .overlay{
       position:fixed;
       inset:0;
@@ -417,6 +438,18 @@
       flex-wrap:wrap;
       justify-content:flex-end;
     }
+
+    /* Speaking-like danger button */
+    .btnDanger{ background:#ef4444; color:#fff; }
+    .btnDanger:hover{ background:#dc2626; }
+
+    /* Speaking-like ghost button */
+    .btnGhost{
+      background:#f9fafb;
+      color: var(--text);
+      border:1px solid var(--border);
+    }
+    .btnGhost:hover{ background:#f3f4f6; }
   </style>
 </head>
 
@@ -429,6 +462,7 @@
 
     <div class="card">
       <div class="section">
+        <!-- Prompt -->
         <section class="prompt" id="promptBox" aria-labelledby="promptTitle">
           <div class="promptInner">
             <div class="promptHead">
@@ -439,7 +473,9 @@
               </div>
             </div>
 
-            <p class="promptText">Look at the picture carefully. Write one sentence that describes what is happening.</p>
+            <p class="promptText">
+Look at the picture carefully. Write one sentence that describes what is happening.
+            </p>
 
             <div class="imgWrap">
               <img src="Writing-task-1_assets_office.jpg" alt="TOEIC Writing Task 1 picture" />
@@ -452,6 +488,7 @@
           </div>
         </section>
 
+        <!-- Writing panel -->
         <section class="panel" aria-label="Writing controls">
           <div class="metaRow">
             <div class="timerChip"><span class="timer" id="timer">00:00</span></div>
@@ -467,13 +504,19 @@
 
           <textarea id="writer" placeholder="Type your sentence here..." disabled></textarea>
 
+          <!-- ✅ CHANGED: only Download stays here -->
           <div class="controlsBottom">
             <button id="download" class="btnDownload" disabled>⬇️ Download current draft</button>
+          </div>
+
+          <!-- ✅ NEW: Return is now pinned bottom-right of the panel -->
+          <div class="panelFooter">
             <button id="returnBtn" class="btnReturn">↩️ Return to the module</button>
           </div>
         </section>
       </div>
 
+      <!-- Saved drafts -->
       <div class="saved">
         <div class="savedHead">
           <h3>Saved drafts</h3>
@@ -484,6 +527,7 @@
     </div>
   </div>
 
+  <!-- Return modal -->
   <div class="overlay" id="overlay" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
     <div class="modal">
       <h3 id="modalTitle">Return to the module</h3>
@@ -499,7 +543,7 @@
      * IndexedDB (persist drafts)
      ***********************/
     const DB_NAME = "toeic_writing_db_task1";
-    const DB_VERSION = 2; // ✅ bump version to add durationSec cleanly
+    const DB_VERSION = 1;
     const STORE = "drafts";
 
     function openDB(){
@@ -510,8 +554,6 @@
           if(!db.objectStoreNames.contains(STORE)){
             const store = db.createObjectStore(STORE, { keyPath: "id", autoIncrement: true });
             store.createIndex("createdAt", "createdAt");
-          } else {
-            // no schema enforcement needed for durationSec (just stored as extra field)
           }
         };
         req.onsuccess = () => resolve(req.result);
@@ -519,16 +561,12 @@
       });
     }
 
-    async function addDraftToDB({ text, durationSec }){
+    async function addDraftToDB({ text }){
       const db = await openDB();
       return new Promise((resolve, reject) => {
         const tx = db.transaction(STORE, "readwrite");
         const store = tx.objectStore(STORE);
-        const req = store.add({
-          text,
-          durationSec: Number(durationSec || 0),
-          createdAt: Date.now()
-        });
+        const req = store.add({ text, createdAt: Date.now() });
         req.onsuccess = () => resolve(req.result);
         req.onerror = () => reject(req.error);
       });
@@ -557,26 +595,26 @@
     }
 
     /***********************
-     * UI refs
+     * UI
      ***********************/
     const startTypingBtn = document.getElementById("startTyping");
-    const stopTypingBtn  = document.getElementById("stopTyping");
-    const resetBtn       = document.getElementById("reset");
-    const saveBtn        = document.getElementById("save");
-    const dlBtn          = document.getElementById("download");
-    const returnBtn      = document.getElementById("returnBtn");
+    const saveBtn = document.getElementById("save");
+    const resetBtn = document.getElementById("reset");
+    const dlBtn = document.getElementById("download");
+    const returnBtn = document.getElementById("returnBtn");
+    const stopTypingBtn = document.getElementById("stopTyping");
 
-    const writer   = document.getElementById("writer");
+    const writer = document.getElementById("writer");
     const statusEl = document.getElementById("status");
-    const savedList= document.getElementById("savedList");
+    const savedList = document.getElementById("savedList");
 
-    const overlay  = document.getElementById("overlay");
-    const okBtn    = document.getElementById("okBtn");
+    const overlay = document.getElementById("overlay");
+    const okBtn = document.getElementById("okBtn");
 
-    const stateChip= document.getElementById("stateChip");
-    const stateText= document.getElementById("stateText");
+    const stateChip = document.getElementById("stateChip");
+    const stateText = document.getElementById("stateText");
 
-    const timerEl  = document.getElementById("timer");
+    const timerEl = document.getElementById("timer");
 
     function showOverlay(){ overlay.style.display = "flex"; }
     function hideOverlay(){ overlay.style.display = "none"; }
@@ -597,7 +635,7 @@
     }
 
     /***********************
-     * Timer
+     * Timer (starts on Start typing)
      ***********************/
     let seconds = 0;
     let timerInterval = null;
@@ -646,27 +684,7 @@
         .replaceAll(">","&gt;");
     }
 
-    function syncCurrentDownloadState(){
-      dlBtn.disabled = !(writer.value.trim());
-    }
-
-    function lockAttempt(message){
-      writer.disabled = true;
-      stopTimer();
-
-      startTypingBtn.disabled = false;  // ✅ can start again
-      stopTypingBtn.disabled  = true;
-
-      resetBtn.disabled = false;
-      saveBtn.disabled  = !(writer.value.trim());
-      syncCurrentDownloadState();
-
-      setStatus(message);
-    }
-
-    function renderSavedDraft(draft, draftNumber){
-      const { id, text, createdAt, durationSec } = draft;
-
+    function renderSavedDraft({ id, text, createdAt }, draftNumber){
       const item = document.createElement("div");
       item.className = "savedItem";
       item.dataset.id = String(id);
@@ -676,9 +694,7 @@
 
       const label = document.createElement("div");
       label.className = "savedLabel";
-      label.innerHTML =
-        `<strong>Draft ${draftNumber}</strong>
-         <span class="tag">• ${Number(durationSec || 0)}s • saved ${new Date(createdAt).toLocaleString()}</span>`;
+      label.innerHTML = `<strong>Draft ${draftNumber}</strong> <span class="tag">• saved ${new Date(createdAt).toLocaleString()}</span>`;
 
       const actions = document.createElement("div");
       actions.className = "savedActions";
@@ -689,26 +705,14 @@
       restoreBtn.textContent = "↩️ Restore";
       restoreBtn.onclick = (e) => {
         e.preventDefault();
-
-        // Load the draft but keep it locked until Start typing
+        writer.disabled = false;
         writer.value = text || "";
-        writer.disabled = true;
-
-        // Restore elapsed time and pause timer
-        seconds = Number(durationSec || 0);
-        setTimer(seconds);
-        stopTimer();
-
-        // Require user to click Start typing to continue
-        startTypingBtn.disabled = false;
-        stopTypingBtn.disabled  = true;
-
+        saveBtn.disabled = false;
         resetBtn.disabled = false;
-        saveBtn.disabled  = true; // optional: force Start typing before saving again
-        syncCurrentDownloadState();
+        startTypingBtn.disabled = true;
 
-        setState("ready");
-        setStatus(`Draft ${draftNumber} restored. Click Start typing to continue.`);
+        syncCurrentDownloadState();
+        setStatus(`Draft ${draftNumber} restored.`);
         window.scrollTo({ top: 0, behavior: "smooth" });
       };
 
@@ -784,33 +788,60 @@
       });
     }
 
+    function syncCurrentDownloadState(){
+      dlBtn.disabled = !(writer.value.trim());
+    }
+
+    let attemptEnded = false;
+
+    function lockAttempt(message = "Stopped. Start a new attempt."){
+      writer.disabled = true;
+      attemptEnded = true;
+
+      startTypingBtn.disabled = true;
+      stopTypingBtn.disabled = true;
+
+      resetBtn.disabled = false;
+      saveBtn.disabled = !(writer.value.trim());
+      syncCurrentDownloadState();
+
+      setStatus(message);
+      stopTimer();
+    }
+
     /***********************
-     * Handlers
+     * Init state
      ***********************/
+    setTimer(0);
+    setStatus("Ready");
+    setState("ready");
+    loadSavedDrafts().catch(() => {});
+    syncCurrentDownloadState();
+
     writer.addEventListener("input", () => {
       syncCurrentDownloadState();
       setState("ready");
-      // Save enabled only when typing session is active
-      if(!writer.disabled) saveBtn.disabled = !(writer.value.trim());
+      saveBtn.disabled = !(writer.value.trim());
     });
 
     startTypingBtn.onclick = () => {
+      attemptEnded = false;
+
       writer.disabled = false;
       writer.focus();
 
       startTypingBtn.disabled = true;
-      stopTypingBtn.disabled  = false;
+      stopTypingBtn.disabled = false;
 
       resetBtn.disabled = false;
-      saveBtn.disabled  = !(writer.value.trim());
-      syncCurrentDownloadState();
+      saveBtn.disabled = false;
 
       setStatus("Typing…");
       startTimer();
     };
 
     stopTypingBtn.onclick = () => {
-      lockAttempt("Stopped. Click Start typing to continue, or Save/Reset.");
+      lockAttempt("Stopped. You can save or reset.");
     };
 
     saveBtn.onclick = async () => {
@@ -821,13 +852,10 @@
       }
       try{
         setStatus("Saving draft…");
-        await addDraftToDB({ text, durationSec: seconds });
+        await addDraftToDB({ text });
         await loadSavedDrafts();
         setStatus("Draft saved on this device.");
         setState("saved");
-
-        // After saving, lock (like finishing a take)
-        lockAttempt("Saved. Click Start typing for a new attempt, or restore another draft.");
       } catch(err){
         console.error(err);
         setStatus("Save failed (storage blocked?)");
@@ -839,16 +867,18 @@
       writer.value = "";
       writer.disabled = true;
 
-      resetTimer();
-      syncCurrentDownloadState();
+      attemptEnded = false;
 
+      syncCurrentDownloadState();
       setStatus("Ready");
       setState("ready");
 
+      resetTimer();
+
       startTypingBtn.disabled = false;
-      stopTypingBtn.disabled  = true;
+      stopTypingBtn.disabled = true;
+      saveBtn.disabled = true;
       resetBtn.disabled = true;
-      saveBtn.disabled  = true;
     };
 
     dlBtn.onclick = () => {
@@ -867,22 +897,6 @@
         setStatus("Please close this tab to return to the module.");
       }, 250);
     });
-
-    /***********************
-     * Init
-     ***********************/
-    setTimer(0);
-    setStatus("Ready");
-    setState("ready");
-
-    startTypingBtn.disabled = false;
-    stopTypingBtn.disabled  = true;
-    resetBtn.disabled = true;
-    saveBtn.disabled  = true;
-
-    writer.disabled = true;
-    syncCurrentDownloadState();
-    loadSavedDrafts().catch(() => {});
   </script>
 </body>
 </html>
