@@ -8,7 +8,6 @@
   <style>
     :root{
       /* Rise-like palette */
-      --bgiseBg:#f6f7f9; /* kept for safety if you ever referenced it */
       --bg:#f6f7f9;
       --surface:#ffffff;
       --text:#111827;
@@ -28,10 +27,6 @@
       --softHover:#e5e7eb;
 
       /* Status colors */
-      --dangerBg:#fee2e2;
-      --dangerText:#b91c1c;
-      --dangerBorder:#fecaca;
-
       --successBg:#dcfce7;
       --successText:#166534;
       --successBorder:#86efac;
@@ -123,7 +118,7 @@
       align-items:center;
     }
 
-    /* State chip (same component) */
+    /* State chip */
     .state{
       display:inline-flex;
       align-items:center;
@@ -142,7 +137,6 @@
     }
     .state.saved .dot{ background:#16a34a; }
 
-    /* lock prompt spacing */
     .promptInner p{ margin:0; }
     .promptInner p + p{ margin-top: 6px; }
 
@@ -178,7 +172,7 @@
     }
     .wordsLine em{ font-style: italic; }
 
-    /* Writing panel (same feel as speaking control panel) */
+    /* Panel */
     .panel{
       margin-top: 14px;
       border:1px solid var(--border);
@@ -187,29 +181,10 @@
       background:#fff;
     }
 
-    /* Timer chip (same as speaking tasks) */
-.timerChip{
-  display:inline-flex;
-  align-items:center;
-  gap:8px;
-  padding: 9px 12px;
-  border-radius: 999px;
-  border:1px solid var(--border);
-  background: var(--soft);
-  font-size: 13px;
-  color: var(--muted);
-}
-.timer{
-  font-weight: 900;
-  color: var(--text);
-  font-variant-numeric: tabular-nums;
-  letter-spacing: .02em;
-}
-
     .metaRow{
       display:flex;
       align-items:center;
-      justify-content:space-between;
+      justify-content:space-between; /* ✅ timer left, status right */
       gap:10px;
       flex-wrap:wrap;
       margin-bottom: 12px;
@@ -219,11 +194,31 @@
       font-size: 13px;
     }
 
-    /* Buttons (same as speaking tasks) */
+    /* Timer chip */
+    .timerChip{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding: 9px 12px;
+      border-radius: 999px;
+      border:1px solid var(--border);
+      background: var(--soft);
+      font-size: 13px;
+      color: var(--muted);
+    }
+    .timer{
+      font-weight: 900;
+      color: var(--text);
+      font-variant-numeric: tabular-nums;
+      letter-spacing: .02em;
+    }
+
+    /* Buttons */
     .controls{
       display:flex;
       gap:10px;
       flex-wrap:wrap;
+      align-items:center;
     }
 
     button{
@@ -271,7 +266,7 @@
     }
     .btnReturn:hover{ background:#e0e7ff; }
 
-    /* Textarea styled like a clean Rise input */
+    /* Textarea */
     textarea{
       width:100%;
       min-height: 150px;
@@ -291,8 +286,24 @@
       border-color: rgba(37,99,235,.45);
       box-shadow: var(--focus);
     }
+    textarea:disabled{
+      background:#f8fafc;
+      color:#6b7280;
+    }
 
-    /* Saved drafts (same section style as speaking saved takes) */
+    /* Bottom buttons stable */
+    .controlsBottom{
+      margin-top:10px;
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+    .controlsBottom button{
+      flex: 0 0 auto;
+    }
+
+    /* Saved drafts */
     .saved{
       border-top:1px solid var(--border);
       padding: 16px 18px 18px;
@@ -316,13 +327,11 @@
       color: var(--muted);
       font-size: 13px;
     }
-
     .savedList{
       display:flex;
       flex-direction:column;
       gap: 10px;
     }
-
     .savedItem{
       border:1px solid var(--border);
       border-radius: var(--radius);
@@ -386,7 +395,7 @@
       color:#111827;
     }
 
-    /* Modal overlay (same as speaking tasks) */
+    /* Modal overlay */
     .overlay{
       position:fixed;
       inset:0;
@@ -422,17 +431,6 @@
       flex-wrap:wrap;
       justify-content:flex-end;
     }
-    /* Keep bottom buttons stable (no stretching / weird shifting) */
-.controlsBottom{
-  margin-top:10px;
-  display:flex;
-  gap:10px;
-  flex-wrap:wrap;
-  align-items:center;
-}
-.controlsBottom button{
-  flex: 0 0 auto; /* ✅ prevents weird resizing */
-}
   </style>
 </head>
 
@@ -461,15 +459,11 @@ Look at the picture carefully. Write one sentence that describes what is happeni
             </p>
 
             <div class="imgWrap">
-              <img
-                src="Writing-task-1_assets_office.jpg"
-                alt="TOEIC Writing Task 1 picture"
-              />
+              <img src="Writing-task-1_assets_office.jpg" alt="TOEIC Writing Task 1 picture" />
             </div>
 
             <div class="wordsLine">
-              <strong>Words to use:</strong> <em>schedule – discuss</em><br>
-              <br>
+              <strong>Words to use:</strong> <em>schedule – discuss</em><br><br>
               ⚠️You will have <strong>8 minutes</strong> in total for the <strong>5 questions</strong>, allowing approximately <strong>1 minute and 30 seconds</strong> per sentence.
             </div>
           </div>
@@ -478,22 +472,22 @@ Look at the picture carefully. Write one sentence that describes what is happeni
         <!-- Writing panel -->
         <section class="panel" aria-label="Writing controls">
           <div class="metaRow">
-  <div class="timerChip"><span class="timer" id="timer">00:00</span></div>
-  <div class="statusLine" id="status">Ready</div>
-</div>
+            <div class="timerChip"><span class="timer" id="timer">00:00</span></div>
+            <div class="statusLine" id="status">Ready</div>
+          </div>
 
           <div class="controls">
-  <button id="startTyping" class="btnPrimary">Start typing</button>
-  <button id="save" class="btnSuccess" disabled>Save this draft</button>
-  <button id="reset" class="btnNeutral" disabled>Reset</button>
-</div>
+            <button id="startTyping" class="btnPrimary">Start typing</button>
+            <button id="save" class="btnSuccess" disabled>Save this draft</button>
+            <button id="reset" class="btnNeutral" disabled>Reset</button>
+          </div>
 
           <textarea id="writer" placeholder="Type your sentence here..." disabled></textarea>
 
           <div class="controlsBottom">
-  <button id="download" class="btnDownload" disabled>⬇️ Download current draft</button>
-  <button id="returnBtn" class="btnReturn">↩️ Return to the module</button>
-</div>
+            <button id="download" class="btnDownload" disabled>⬇️ Download current draft</button>
+            <button id="returnBtn" class="btnReturn">↩️ Return to the module</button>
+          </div>
         </section>
       </div>
 
@@ -578,6 +572,7 @@ Look at the picture carefully. Write one sentence that describes what is happeni
     /***********************
      * UI
      ***********************/
+    const startTypingBtn = document.getElementById("startTyping");
     const saveBtn = document.getElementById("save");
     const resetBtn = document.getElementById("reset");
     const dlBtn = document.getElementById("download");
@@ -593,18 +588,17 @@ Look at the picture carefully. Write one sentence that describes what is happeni
     const stateChip = document.getElementById("stateChip");
     const stateText = document.getElementById("stateText");
 
+    const timerEl = document.getElementById("timer");
+
     function showOverlay(){ overlay.style.display = "flex"; }
     function hideOverlay(){ overlay.style.display = "none"; }
 
     okBtn.addEventListener("click", hideOverlay);
     overlay.addEventListener("click", (e) => { if(e.target === overlay) hideOverlay(); });
 
-    function setStatus(msg){
-      statusEl.textContent = msg;
-    }
+    function setStatus(msg){ statusEl.textContent = msg; }
 
     function setState(mode){
-      // mode: ready | saved
       stateChip.classList.remove("saved");
       if(mode === "saved"){
         stateChip.classList.add("saved");
@@ -612,6 +606,37 @@ Look at the picture carefully. Write one sentence that describes what is happeni
       } else {
         stateText.textContent = "Ready";
       }
+    }
+
+    /***********************
+     * Timer (starts on Start typing)
+     ***********************/
+    let seconds = 0;
+    let timerInterval = null;
+
+    function pad(n){ return String(n).padStart(2,"0"); }
+    function setTimer(sec){
+      const m = Math.floor(sec / 60);
+      const s = sec % 60;
+      timerEl.textContent = `${pad(m)}:${pad(s)}`;
+    }
+    function startTimer(){
+      if(timerInterval) return;
+      timerInterval = setInterval(() => {
+        seconds++;
+        setTimer(seconds);
+      }, 1000);
+    }
+    function stopTimer(){
+      if(timerInterval){
+        clearInterval(timerInterval);
+        timerInterval = null;
+      }
+    }
+    function resetTimer(){
+      stopTimer();
+      seconds = 0;
+      setTimer(0);
     }
 
     function downloadText(text, filename){
@@ -654,9 +679,15 @@ Look at the picture carefully. Write one sentence that describes what is happeni
       restoreBtn.textContent = "↩️ Restore";
       restoreBtn.onclick = (e) => {
         e.preventDefault();
+        // restore also unlocks typing (so user can edit immediately)
+        writer.disabled = false;
         writer.value = text || "";
+        saveBtn.disabled = false;
+        resetBtn.disabled = false;
+        startTypingBtn.disabled = true;
+
         syncCurrentDownloadState();
-        setStatus(\`Draft ${draftNumber} restored.\`);
+        setStatus(`Draft ${draftNumber} restored.`);
         window.scrollTo({ top: 0, behavior: "smooth" });
       };
 
@@ -668,7 +699,7 @@ Look at the picture carefully. Write one sentence that describes what is happeni
         e.preventDefault();
         try{
           await navigator.clipboard.writeText(text || "");
-          setStatus(\`Draft ${draftNumber} copied.\`);
+          setStatus(`Draft ${draftNumber} copied.`);
         } catch {
           setStatus("Copy failed. Please copy manually.");
         }
@@ -680,8 +711,8 @@ Look at the picture carefully. Write one sentence that describes what is happeni
       downloadBtn.textContent = "⬇️ Download";
       downloadBtn.onclick = (e) => {
         e.preventDefault();
-        downloadText(text || "", \`writing-task1-draft-${draftNumber}.txt\`);
-        setStatus(\`Draft ${draftNumber} downloaded.\`);
+        downloadText(text || "", `writing-task1-draft-${draftNumber}.txt`);
+        setStatus(`Draft ${draftNumber} downloaded.`);
       };
 
       const removeBtn = document.createElement("a");
@@ -736,7 +767,10 @@ Look at the picture carefully. Write one sentence that describes what is happeni
       dlBtn.disabled = !(writer.value.trim());
     }
 
-    // Init
+    /***********************
+     * Init state
+     ***********************/
+    setTimer(0);
     setStatus("Ready");
     setState("ready");
     loadSavedDrafts().catch(() => {});
@@ -746,6 +780,19 @@ Look at the picture carefully. Write one sentence that describes what is happeni
       syncCurrentDownloadState();
       setState("ready");
     });
+
+    startTypingBtn.onclick = () => {
+      writer.disabled = false;
+      writer.focus();
+
+      saveBtn.disabled = false;
+      resetBtn.disabled = false;
+
+      startTypingBtn.disabled = true;
+
+      setStatus("Typing…");
+      startTimer();
+    };
 
     saveBtn.onclick = async () => {
       const text = (writer.value || "").trim();
@@ -768,9 +815,17 @@ Look at the picture carefully. Write one sentence that describes what is happeni
 
     resetBtn.onclick = () => {
       writer.value = "";
+      writer.disabled = true;
+
       syncCurrentDownloadState();
-      setStatus("Reset.");
+      setStatus("Ready");
       setState("ready");
+
+      resetTimer();
+
+      startTypingBtn.disabled = false;
+      saveBtn.disabled = true;
+      resetBtn.disabled = true;
     };
 
     dlBtn.onclick = () => {
@@ -780,7 +835,6 @@ Look at the picture carefully. Write one sentence that describes what is happeni
       setStatus("Downloaded current draft.");
     };
 
-    // Return: try close, then overlay
     returnBtn.addEventListener("click", (e) => {
       e.preventDefault();
       setStatus("Returning to the module…");
