@@ -552,16 +552,16 @@ Look at the picture carefully. Write one sentence that describes what is happeni
       });
     }
 
-    async function addDraftToDB({ text }){
-      const db = await openDB();
-      return new Promise((resolve, reject) => {
-        const tx = db.transaction(STORE, "readwrite");
-        const store = tx.objectStore(STORE);
-        const req = store.add({ text, createdAt: Date.now() });
-        req.onsuccess = () => resolve(req.result);
-        req.onerror = () => reject(req.error);
-      });
-    }
+    async function addDraftToDB({ text, durationSec }){
+  const db = await openDB();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(STORE, "readwrite");
+    const store = tx.objectStore(STORE);
+    const req = store.add({ text, durationSec, createdAt: Date.now() });
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => reject(req.error);
+  });
+}
 
     async function getAllDraftsFromDB(){
       const db = await openDB();
@@ -675,10 +675,15 @@ Look at the picture carefully. Write one sentence that describes what is happeni
         .replaceAll(">","&gt;");
     }
 
-    function renderSavedDraft({ id, text, createdAt }, draftNumber){
-      const item = document.createElement("div");
-      item.className = "savedItem";
-      item.dataset.id = String(id);
+    function renderSavedDraft({ id, text, createdAt, durationSec }, draftNumber){
+
+  const dur = Number.isFinite(durationSec) ? Math.round(durationSec) : 0;
+  const savedWhen = createdAt ? new Date(createdAt).toLocaleString() : "";
+
+  // ...
+  label.innerHTML =
+    `<strong>Draft ${draftNumber}</strong> ` +
+    `<span class="tag">• ${dur}s • saved ${savedWhen}</span>`;
 
       const top = document.createElement("div");
       top.className = "savedTop";
@@ -697,15 +702,16 @@ Look at the picture carefully. Write one sentence that describes what is happeni
       restoreBtn.onclick = (e) => {
   e.preventDefault();
 
-  // Load the text, but DO NOT resume typing automatically
   writer.value = text || "";
-  writer.disabled = true;
+  writer.disabled = true; // force click Start typing to continue
 
-  // User must click Start typing to continue
+  // ✅ restore timer from THIS draft's saved duration
+  seconds = Number.isFinite(durationSec) ? Math.round(durationSec) : 0;
+  setTimer(seconds);
+
   startTypingBtn.disabled = false;
   stopTypingBtn.disabled = true;
 
-  // Allow reset, allow save if there's content
   resetBtn.disabled = false;
   saveBtn.disabled = !(writer.value.trim());
 
@@ -849,23 +855,23 @@ Look at the picture carefully. Write one sentence that describes what is happeni
     };
 
     saveBtn.onclick = async () => {
-      const text = (writer.value || "").trim();
-      if(!text){
-        setStatus("Write your sentence first.");
-        return;
-      }
-      try{
-        setStatus("Saving draft…");
-        await addDraftToDB({ text });
-        await loadSavedDrafts();
-        setStatus("Draft saved on this device.");
-        setState("saved");
-      } catch(err){
-        console.error(err);
-        setStatus("Save failed (storage blocked?)");
-        alert("Saving failed. Your browser may be blocking storage for this page.");
-      }
-    };
+  const text = (writer.value || "").trim();
+  if(!text){
+    setStatus("Write your sentence first.");
+    return;
+  }
+  try{
+    setStatus("Saving draft…");
+    await addDraftToDB({ text, durationSec: seconds }); // ✅ store per draft
+    await loadSavedDrafts();
+    setStatus("Draft saved on this device.");
+    setState("saved");
+  } catch(err){
+    console.error(err);
+    setStatus("Save failed (storage blocked?)");
+    alert("Saving failed. Your browser may be blocking storage for this page.");
+  }
+};
 
     resetBtn.onclick = () => {
       writer.value = "";
