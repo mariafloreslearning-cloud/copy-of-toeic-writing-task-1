@@ -187,6 +187,25 @@
       background:#fff;
     }
 
+    /* Timer chip (same as speaking tasks) */
+.timerChip{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding: 9px 12px;
+  border-radius: 999px;
+  border:1px solid var(--border);
+  background: var(--soft);
+  font-size: 13px;
+  color: var(--muted);
+}
+.timer{
+  font-weight: 900;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: .02em;
+}
+
     .metaRow{
       display:flex;
       align-items:center;
@@ -448,8 +467,9 @@ Look at the picture carefully. Write one sentence that describes what is happeni
         <!-- Writing panel -->
         <section class="panel" aria-label="Writing controls">
           <div class="metaRow">
-            <div class="statusLine" id="status">Ready</div>
-          </div>
+  <div class="timerChip"><span class="timer" id="timer">00:00</span></div>
+  <div class="statusLine" id="status">Ready</div>
+</div>
 
           <div class="controls">
             <button id="save" class="btnSuccess">Save this draft</button>
