@@ -422,6 +422,17 @@
       flex-wrap:wrap;
       justify-content:flex-end;
     }
+    /* Keep bottom buttons stable (no stretching / weird shifting) */
+.controlsBottom{
+  margin-top:10px;
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  align-items:center;
+}
+.controlsBottom button{
+  flex: 0 0 auto; /* ✅ prevents weird resizing */
+}
   </style>
 </head>
 
@@ -478,10 +489,10 @@ Look at the picture carefully. Write one sentence that describes what is happeni
 
           <textarea id="writer" placeholder="Type your sentence here..."></textarea>
 
-          <div class="controls" style="margin-top:10px;">
-            <button id="download" class="btnDownload" disabled>⬇️ Download current draft</button>
-            <button id="returnBtn" class="btnReturn">↩️ Return to the module</button>
-          </div>
+          <div class="controlsBottom">
+  <button id="download" class="btnDownload" disabled>⬇️ Download current draft</button>
+  <button id="returnBtn" class="btnReturn">↩️ Return to the module</button>
+</div>
         </section>
       </div>
 
