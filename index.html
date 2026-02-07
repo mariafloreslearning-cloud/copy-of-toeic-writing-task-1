@@ -695,18 +695,24 @@ Look at the picture carefully. Write one sentence that describes what is happeni
       restoreBtn.className = "linkBtn";
       restoreBtn.textContent = "↩️ Restore";
       restoreBtn.onclick = (e) => {
-        e.preventDefault();
-        // restore also unlocks typing (so user can edit immediately)
-        writer.disabled = false;
-        writer.value = text || "";
-        saveBtn.disabled = false;
-        resetBtn.disabled = false;
-        startTypingBtn.disabled = true;
+  e.preventDefault();
 
-        syncCurrentDownloadState();
-        setStatus(`Draft ${draftNumber} restored.`);
-        window.scrollTo({ top: 0, behavior: "smooth" });
-      };
+  // Load the text, but DO NOT resume typing automatically
+  writer.value = text || "";
+  writer.disabled = true;
+
+  // User must click Start typing to continue
+  startTypingBtn.disabled = false;
+  stopTypingBtn.disabled = true;
+
+  // Allow reset, allow save if there's content
+  resetBtn.disabled = false;
+  saveBtn.disabled = !(writer.value.trim());
+
+  syncCurrentDownloadState();
+  setStatus(`Draft ${draftNumber} restored. Click Start typing to continue.`);
+  window.scrollTo({ top: 0, behavior: "smooth" });
+};
 
       const copyBtn = document.createElement("a");
       copyBtn.href = "#";
