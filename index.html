@@ -302,12 +302,9 @@
     .controlsBottom button{
       flex: 0 0 auto;
     }
-
-    /* ✅ NEW: Return button pinned bottom-right of the PANEL (like your Speaking final layout) */
-    .panelFooter{
-      margin-top: 10px;
-      display:flex;
-      justify-content:flex-end;
+    /* ✅ ONLY CHANGE: push Return button to far bottom-right */
+    .controlsBottom #returnBtn{
+      margin-left:auto;
     }
 
     /* Saved drafts */
@@ -438,7 +435,6 @@
       flex-wrap:wrap;
       justify-content:flex-end;
     }
-
     /* Speaking-like danger button */
     .btnDanger{ background:#ef4444; color:#fff; }
     .btnDanger:hover{ background:#dc2626; }
@@ -504,13 +500,8 @@ Look at the picture carefully. Write one sentence that describes what is happeni
 
           <textarea id="writer" placeholder="Type your sentence here..." disabled></textarea>
 
-          <!-- ✅ CHANGED: only Download stays here -->
           <div class="controlsBottom">
             <button id="download" class="btnDownload" disabled>⬇️ Download current draft</button>
-          </div>
-
-          <!-- ✅ NEW: Return is now pinned bottom-right of the panel -->
-          <div class="panelFooter">
             <button id="returnBtn" class="btnReturn">↩️ Return to the module</button>
           </div>
         </section>
@@ -705,6 +696,7 @@ Look at the picture carefully. Write one sentence that describes what is happeni
       restoreBtn.textContent = "↩️ Restore";
       restoreBtn.onclick = (e) => {
         e.preventDefault();
+        // restore also unlocks typing (so user can edit immediately)
         writer.disabled = false;
         writer.value = text || "";
         saveBtn.disabled = false;
@@ -796,13 +788,16 @@ Look at the picture carefully. Write one sentence that describes what is happeni
 
     function lockAttempt(message = "Stopped. Start a new attempt."){
       writer.disabled = true;
+
+      // Don't allow continuing same attempt
       attemptEnded = true;
 
+      // Buttons like speaking: after stop you can Reset or Save, but not Start
       startTypingBtn.disabled = true;
       stopTypingBtn.disabled = true;
 
       resetBtn.disabled = false;
-      saveBtn.disabled = !(writer.value.trim());
+      saveBtn.disabled = !(writer.value.trim()); // allow save only if text exists
       syncCurrentDownloadState();
 
       setStatus(message);
@@ -821,10 +816,12 @@ Look at the picture carefully. Write one sentence that describes what is happeni
     writer.addEventListener("input", () => {
       syncCurrentDownloadState();
       setState("ready");
+      // If user somehow typed (shouldn't happen when disabled), keep save enabled
       saveBtn.disabled = !(writer.value.trim());
     });
 
     startTypingBtn.onclick = () => {
+      // starting a brand new attempt
       attemptEnded = false;
 
       writer.disabled = false;
@@ -841,6 +838,7 @@ Look at the picture carefully. Write one sentence that describes what is happeni
     };
 
     stopTypingBtn.onclick = () => {
+      // End this attempt and lock the draft so it can't be continued
       lockAttempt("Stopped. You can save or reset.");
     };
 
@@ -875,6 +873,7 @@ Look at the picture carefully. Write one sentence that describes what is happeni
 
       resetTimer();
 
+      // Back to initial state
       startTypingBtn.disabled = false;
       stopTypingBtn.disabled = true;
       saveBtn.disabled = true;
